@@ -4,42 +4,58 @@ import telebot
 
 TOKEN = "7578329604:AAEjfLM4OW5MVqPu8k58tN7VfDrWqkeAsJQ"
 
-lobby_reg = {'LBDEF':[],'LB4410':[]}
+lobby_reg = {'LBDEF':[],'LB4410':[]} #Количесво лобби lbdef = lobbydefolt
+nickname_base = {}
 
 
 bot = telebot.TeleBot(TOKEN)
-@bot.message_handler(commands=['start'])#декоратор если start
+@bot.message_handler(commands=['start']) #декоратор если start
 def start_message(message):
-    bot.send_message(message.chat.id,'Вас приветствует DnD бот!\nЧтобы открыть меню напишите /menu')
+    bot.send_message(message.chat.id,'Вас приветствует DnD бот!\nЧтобы открыть меню, напишите /menu \nЧтобы создать свой профиль, напишите /ID')
     bot.register_next_step_handler(message,dialog1)
 
 
 def dialog1(message):
     if message.text.lower() == '/menu':
         bot.send_message(message.chat.id,'/создать_лобби(/create)\n/присоединиться_к_лобби(/join)')
-        bot.register_next_step_handler(message, get_perem)
+        bot.register_next_step_handler(message, get_perem, get_ID)
+
+@bot.message_handler(commands=['ID'])
+def get_ID(message):
+    bot.send_message(message.chat.id, "Введите имя")
+    bor.register_next_step_handler(message, get_create_name)
+
+def get_create_name(message):
+    user_id = message.chat.id
+    user_nick_name = message.text
+    nickname_base[user_id] = user_nick_name
+    bot.send_message(message.chat.id, f"Имя создано: {user_nick_name}")
 
 
-def get_perem(message):#переписать этот позор
+def get_perem(message): #переписать этот позор
     if message.text == '/join':
         bot.register_next_step_handler(message,get_join)
     elif message.text == '/create':
         bot.register_next_step_handler(message,get_creater)
 
 
-@bot.message_handler(commands=['join'])
-def get_join(message):
+
+@bot.message_handler(commands=['join']) #декоратор функции
+def get_join(message): #создание лобби
     bot.send_message(message.chat.id,"Введите номер лобби")
     bot.register_next_step_handler(message, get_add)
 
 
-def get_add(message):
+def get_add(message): #подключение в лобби
     if message.text in lobby_reg:
         lobby_name = message.text
         user_name = message.chat.id
         if lobby_name in lobby_reg.keys():
-            lobby_reg[lobby_name].append(user_name)
-            bot.send_message(message.chat.id,"Вы подключены!")
+            if user_name not in lobby_reg[lobby_name]:
+                lobby_reg[lobby_name].append(user_name)
+                bot.send_message(message.chat.id,f"Вы подключены к лобби: {lobby_name} ")
+            elif user_name in lobby_reg[lobby_name]:
+                bot.send_message(message.chat.id, "Вы УЖЕ подключенны к этому лобби!")
     else:
         bot.send_message(message.chat.id, "Нет такого лобби.")
 
@@ -53,7 +69,7 @@ def get_creater(message):
         if nomer_lob_gen not in lobby_reg.keys():
             break
     lobby_reg[nomer_lob_gen] = [cretor_name]
-    bot.send_message(message.chat.id, f"Создано лобби под номером {nomer_lob_gen}")
+    bot.send_message(message.chat.id, f"Создано лобби под именем: {nomer_lob_gen}")
 
 
 
@@ -72,11 +88,11 @@ def print_comands(message):
                                       "/create - создать лобби\n"
                                       "/exit - выйти из лобби\n"
                                       "/mess - написать сообщение(для ГМ)\n"
-                                      "/techData")
+                                      "/techInfo")
 
-@bot.message_handler(commands=['techData'])
+@bot.message_handler(commands=['techInfo'])
 def info(message):
-    bot.send_message(message.chat.id,f"{lobby_reg}")
+    bot.send_message(message.chat.id,f"{lobby_reg}", f"{nickname_base}")
 
 
 @bot.message_handler(commands=['mess'])
@@ -114,4 +130,6 @@ if __name__ == '__main__':
     bot.infinity_polling()#константа для обновления данных
 
 
-#НИЧЕГО
+
+
+
