@@ -71,13 +71,19 @@ def print_comands(message):
     bot.send_message(message.chat.id, "/join - присоединиться к лобби\n"
                                       "/create - создать лобби\n"
                                       "/exit - выйти из лобби\n"
-                                      "/mess - написать сообщение(для ГМ)")
+                                      "/mess - написать сообщение(для ГМ)\n"
+                                      "/techData")
+
+@bot.message_handler(commands=['techData'])
+def info(message):
+    bot.send_message(message.chat.id,f"{lobby_reg}")
 
 
 @bot.message_handler(commands=['mess'])
 def get_message(message):
     bot.send_message(message.chat.id, "Напишите номер лобби")
-    bot.register_next_step_handler(message)
+    bot.register_next_step_handler(message,get_message1)
+
 
 def get_message1(message):
     if message.text in lobby_reg.keys():
@@ -90,14 +96,17 @@ def get_message1(message):
         bot.send_message(message.chat.id,"Такого лобби не существует")
 
 """def get_message2(message):
+    mes_gm = message.text
+    for lc_id in lobby_reg[lob]"""
     
         
 
 
-"""
 @bot.message_handler(content_types=['text'])# по факту обязан работать во всех остальных случаях
 def print_help(message):
     bot.send_message(message.chat.id, "Напишите /help для вывода списка команд")
+
+
 
 
 if __name__ == '__main__':
