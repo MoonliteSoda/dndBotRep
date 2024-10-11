@@ -103,3 +103,6 @@ def print_help(message):
 if __name__ == '__main__':
     print('Бот запущен!')
     bot.infinity_polling()#константа для обновления данных
+
+
+#НИЧЕГО
