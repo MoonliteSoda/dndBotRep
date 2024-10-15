@@ -2,7 +2,7 @@ from random import randrange
 
 import telebot
 
-TOKEN = "7578329604:AAEjfLM4OW5MVqPu8k58tN7VfDrWqkeAsJQ"
+TOKEN = ""
 
 lobby_reg = {'LBDEF':[],'LB4410':[]} #Количесво лобби lbdef = lobbydefolt
 nickname_base = {}
