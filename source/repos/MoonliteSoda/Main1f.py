@@ -2,7 +2,7 @@ from random import randrange
 
 import telebot
 
-TOKEN = "7578329604:AAEjfLM4OW5MVqPu8k58tN7VfDrWqkeAsJQ"
+TOKEN = ""
 
 lobby_reg = {'LB0000':[['test_user1'],['test_user2']]}
 buffer = []
